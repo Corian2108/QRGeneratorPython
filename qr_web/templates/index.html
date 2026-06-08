@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Códigos QR</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+
+<body>
+    <main class="container">
+        <header class="header">
+            <h1>Generador de Códigos QR</h1>
+            <p class="subtitle">Convierte texto o URLs en códigos QR personalizados</p>
+        </header>
+
+        <form class="qr-form" id="qr-form">
+            <fieldset class="form-section">
+                <legend class="form-legend">Contenido del QR</legend>
+                <div class="form-group">
+                    <label for="url-input">Ingresa texto o URL</label>
+                    <input 
+                        type="text" 
+                        id="url-input" 
+                        placeholder="Ejemplo: https://ejemplo.com o cualquier texto"
+                        required
+                    >
+                </div>
+            </fieldset>
+
+            <fieldset class="form-section">
+                <legend class="form-legend">Personalización</legend>
+                <div class="color-group">
+                    <div class="color-input-wrapper">
+                        <label for="bg-color">Color de fondo</label>
+                        <input type="color" id="bg-color" value="#ffffff">
+                    </div>
+                    <div class="color-input-wrapper">
+                        <label for="fill-color">Color del código</label>
+                        <input type="color" id="fill-color" value="#000000">
+                    </div>
+                </div>
+            </fieldset>
+
+            <button type="submit" class="btn-generate">Generar QR</button>
+        </form>
+
+        <section class="result-section">
+            <div id="qr-resultado" class="qr-container">
+                <!-- <p class="placeholder-text">El código QR aparecerá aquí</p> -->
+            </div>
+        </section>
+    </main>
+
+    <script src="../static/js/main.js"></script>
+</body>
+
+</html>
