@@ -19,13 +19,13 @@ async function generarQR() {
         return;
     }
 
-    if(bgColor === fillColor) {
+    if (bgColor === fillColor) {
         mostrarError('❌ El color de fondo y el de relleno no pueden ser iguales');
         return;
     }
 
     // Mostrar mensaje de "cargando"
-    console.log('contenedorQR'+ qrResultado); 
+    console.log('contenedorQR' + qrResultado);
     qrResultado.innerHTML = '<p>⏳ Generando QR... </p>';
 
     try {
@@ -93,8 +93,11 @@ function descargarQR(imagenURL) {
 
 // 4. Opcional: Generar al presionar Enter
 urlInput.addEventListener('keypress', (event) => {
-    if (event.key === 'Enter') 
-    });
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        generarQR();
+    }
+});
 // 3. Conectar el formulario con la función evitando el envío nativo
 qrForm.addEventListener('submit', (event) => {
     event.preventDefault();
