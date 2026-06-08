@@ -1,7 +1,7 @@
 
 // 1. Obtener referencias a los elementos del DOM
 const urlInput = document.getElementById('url-input');
-// const generarBtn = document.getElementById('generar-btn');
+const qrForm = document.getElementById('qr-form');
 const qrResultado = document.getElementById('qr-resultado');
 const bgColorInput = document.getElementById('bg-color');
 const fillColorInput = document.getElementById('fill-color');
@@ -93,7 +93,18 @@ function descargarQR(imagenURL) {
 
 // 4. Opcional: Generar al presionar Enter
 urlInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') 
+    });
+// 3. Conectar el formulario con la función evitando el envío nativo
+qrForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    generarQR();
+});
+
+// 4. Opcional: Generar al presionar Enter dentro del campo de URL
+urlInput.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
+        event.preventDefault();
         generarQR();
     }
 });
