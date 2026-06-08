@@ -1,19 +1,43 @@
 
-// 1. Obtener referencias a los elementos del DOM
+/*
+  main.js
+
+  Módulo de interacción con la página para generar y descargar códigos QR.
+
+  - Lee valores del formulario (`url-input`, `bg-color`, `fill-color`).
+  - Envía una petición POST a `/generar_qr` y muestra la imagen resultante.
+  - Proporciona utilidades de UI: mostrar errores y descargar la imagen.
+*/
+
 const urlInput = document.getElementById('url-input');
 const qrForm = document.getElementById('qr-form');
 const qrResultado = document.getElementById('qr-resultado');
 const bgColorInput = document.getElementById('bg-color');
 const fillColorInput = document.getElementById('fill-color');
 
-// 2. Función que se ejecuta al hacer clic
+
+/*
+  generarQR()
+
+  Envía los datos del formulario al servidor para generar un QR y
+  muestra la imagen recibida.
+
+  Parámetros:
+    - Ninguno (lee desde el DOM):
+        * `url` (string): URL a codificar.
+        * `background` (string): color de fondo en formato hex.
+        * `fill_color` (string): color del código en formato hex.
+
+  Salida esperada:
+    - Inserta en `qrResultado` un `<img>` con el QR generado y un
+      botón con clase `btn-download` para descargar la imagen.
+    - En caso de error, llama a `mostrarError(mensaje)`.
+*/
 async function generarQR() {
-    // Obtener la URL ingresada por el usuario
     const url = urlInput.value.trim();
     const bgColor = bgColorInput.value;
     const fillColor = fillColorInput.value;
 
-    // Validar que no esté vacío
     if (!url) {
         mostrarError('❌ Por favor ingresa una URL o texto');
         return;
@@ -24,12 +48,10 @@ async function generarQR() {
         return;
     }
 
-    // Mostrar mensaje de "cargando"
     console.log('contenedorQR' + qrResultado);
     qrResultado.innerHTML = '<p>⏳ Generando QR... </p>';
 
     try {
-        // Enviar la URL al servidor usando Fetch API
         const formData = new FormData();
         formData.append('url', url);
         formData.append('background', document.getElementById('bg-color').value);
@@ -40,16 +62,13 @@ async function generarQR() {
             body: formData
         });
 
-        // Verificar si la respuesta es exitosa
         if (!respuesta.ok) {
             throw new Error('Error al generar el QR');
         }
 
-        // Convertir la respuesta a una imagen
         const blob = await respuesta.blob();
         const imagenURL = URL.createObjectURL(blob);
 
-        // Crear elemento <img> y mostrarlo
         const img = document.createElement('img');
         img.src = imagenURL;
         img.alt = 'Código QR generado';
@@ -57,16 +76,14 @@ async function generarQR() {
         img.style.border = '1px solid #ccc';
         img.style.borderRadius = '8px';
 
-        // Limpiar y mostrar la imagen
         qrResultado.innerHTML = '';
         qrResultado.appendChild(img);
 
-        // Añadir botón para descargar
         const btnDescargar = document.createElement('button');
-        btnDescargar.textContent = '💾 Descargar QR';
-        btnDescargar.style.marginTop = '15px';
-        btnDescargar.style.backgroundColor = '#28a745';
-        btnDescargar.onclick = () => descargarQR(imagenURL);
+        btnDescargar.type = 'button';
+        btnDescargar.className = 'btn-download';
+        btnDescargar.textContent = 'Descargar QR';
+        btnDescargar.addEventListener('click', () => descargarQR(imagenURL));
 
         qrResultado.appendChild(btnDescargar);
 
@@ -75,12 +92,34 @@ async function generarQR() {
     }
 }
 
-// Función para mostrar mensajes de error
+
+/*
+  mostrarError(mensaje)
+
+  Inserta un párrafo con la clase `error` dentro de `qrResultado`.
+
+  Parámetros:
+    - mensaje (string): texto del error a mostrar.
+
+  Salida esperada:
+    - Reemplaza el contenido de `qrResultado` por el mensaje formateado.
+*/
 function mostrarError(mensaje) {
     qrResultado.innerHTML = `<p class="error">${mensaje}</p>`;
 }
 
-// Función para descargar el QR
+
+/*
+  descargarQR(imagenURL)
+
+  Inicia la descarga del recurso indicado por `imagenURL`.
+
+  Parámetros:
+    - imagenURL (string): URL (por ejemplo creada con `URL.createObjectURL`).
+
+  Salida esperada:
+    - Dispara la descarga del fichero `mi_codigo_qr.png`.
+*/
 function descargarQR(imagenURL) {
     const link = document.createElement('a');
     link.download = 'mi_codigo_qr.png';
@@ -88,26 +127,22 @@ function descargarQR(imagenURL) {
     link.click();
 }
 
-// 3. Conectar el botón con la función
-// generarBtn.addEventListener('click', generarQR);
 
-// 4. Opcional: Generar al presionar Enter
+/*
+  Event listeners: conexión de UI
+
+  - Escucha el evento `submit` del formulario para evitar el envío nativo
+    y llamar a `generarQR()`.
+  - Escucha la tecla Enter en `urlInput` para generar el QR.
+*/
 urlInput.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault();
         generarQR();
     }
 });
-// 3. Conectar el formulario con la función evitando el envío nativo
+
 qrForm.addEventListener('submit', (event) => {
     event.preventDefault();
     generarQR();
-});
-
-// 4. Opcional: Generar al presionar Enter dentro del campo de URL
-urlInput.addEventListener('keypress', (event) => {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        generarQR();
-    }
 });
